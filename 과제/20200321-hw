@@ -1,0 +1,353 @@
+### 비밀번호 검증하기
+Q1. 6자리 이상이 아닐 경우 
+`<button disabled={password.length < 6}>`
+
+Q2. 비밀번호 길이가 6 이상,username을 포함하고 있지 않음,알파벳 대소문자 각각 하나 이상<br>
+조건 1. 유효성 검사를 통과해야 제출 버튼 활성화
+
+```javascript
+import React, {Component} from "react";
+
+class App extends Component {
+    id = 1;
+    state = {
+        username: '',
+        password: '',
+        email: '',
+        list: []
+    };
+
+    handleChange = e => {
+        const {value, name} = e.target;
+        this.setState({
+            [name]: value
+        });
+    };
+
+    handleInsert = () => {
+        const {username, password, email, list} = this.state;
+        this.setState({
+            username: '',
+            password: '',
+            email:"",
+            list: list.concat({id: this.id, username, password,email})
+        });
+        this.id = +1;
+    };
+
+    inSafe = (username, password, email) => {
+        const patten = /^(?=\w{6,}$)(?=.*[a-z])(?=.*[A-Z])/;
+        if (!patten.test(password)) {
+            return {
+                safe: false,
+                msg: "대소문자를 넣어주세요!"
+            };
+        }
+
+        if (password.search(username) > -1) {
+            return {
+                safe: false,
+                msg: "유저명이 포함되어있음!"
+            };
+        }
+        if (!email.includes("@")) {
+            return {
+                safe: false,
+                msg: "@ 넣어주세요!"
+            };
+        }
+        return {safe: true, msg: "ok"};
+    };
+
+    render() {
+        const {username, password,email, list} = this.state;
+        const {safe, msg} = this.inSafe(username, password, email);
+        return (
+            <div>
+                <div>
+                <input
+                    name="username"
+                    placeholder="이름"
+                    value={username}
+                    onChange={this.handleChange}
+                />
+                </div>
+
+                <div>
+                <input
+                    name="password"
+                    placeholder="비밀번호"
+                    value={password}
+                    onChange={this.handleChange}
+                />
+                </div>
+
+                <div>
+                <input
+                    name="email"
+                    placeholder="이메일"
+                    value={email}
+                    onChange={this.handleChange}
+                />
+                </div>
+
+                <button
+                    onClick={this.handleInsert}
+                    disabled={!safe}
+                > {safe ? "submit" : msg} submit
+                </button>
+                <ul>
+                    {list.map((item) => (
+                        <li key={item.id}>
+                          <div>{item.username}</div>
+                            <div>{item.password}</div>
+                            <div> {item.email}</div>
+                        </li>
+                    ))}
+                </ul>
+
+            </div>
+        )
+    }
+}
+
+export default App;
+```
+
+조건 1-1 이메일 추가와 함수 나누기
+
+
+```javascript
+import React, {Component} from "react";
+
+class App extends Component {
+  id = 1;
+  state = {
+    username: '',
+    password: '',
+    email: '',
+    list: []
+  };
+
+  handleChange = e => {
+    const {value, name} = e.target;
+    this.setState({
+      [name]: value
+    });
+  };
+
+  handleInsert = () => {
+    const {username, password, email, list} = this.state;
+    this.setState({
+      username: '',
+      password: '',
+      email:"",
+      list: list.concat({id: this.id, username, password,email})
+    });
+    this.id = this.id++;
+  };
+
+
+
+  isPasswordSafe = (password,username) => {
+    const patten = /^(?=\w{6,}$)(?=.*[a-z])(?=.*[A-Z])/;
+    if (!patten.test(password)) {
+      return {
+        safe: false,
+        msg: "대문자 없음"
+      };
+    }
+    if(password.search(username) > -1) {
+      return {
+        safe: false,
+        msg: "유저명이 포함되어있음!"
+      };
+    }
+    return {safe: true,msg: ""};
+  };
+
+  isEmailSafe = (email) => {
+    if(!email.includes("@"))
+      return {
+        safe: false,
+        msg: "@ 없음"
+      };
+    return {safe: true,msg: ""};
+  };
+
+  isSafe = () => {
+    const { username,password,email } = this.state;
+    const pwdSafe1 = this.isPasswordSafe(password,username).safe;
+    const pwdSafe2 = this.isPasswordSafe(password,username).msg;
+    const emailSafe1 = this.isEmailSafe(email).safe;
+    const emailSafe2 = this.isEmailSafe(email).msg;
+    return {
+      safe:pwdSafe1&&emailSafe1,
+      msg:pwdSafe2+''+emailSafe2}
+  };
+
+  render() {
+    const {username, password,email, list} = this.state;
+    const {safe, msg} = this.isSafe();
+    return (
+        <div>
+          <div>
+            <input
+                name="username"
+                placeholder="이름"
+                value={username}
+                onChange={this.handleChange}
+            />
+          </div>
+
+          <div>
+            <input
+                name="password"
+                placeholder="비밀번호"
+                value={password}
+                onChange={this.handleChange}
+            />
+          </div>
+
+          <div>
+            <input
+                name="email"
+                placeholder="이메일"
+                value={email}
+                onChange={this.handleChange}
+            />
+          </div>
+
+          <button
+              onClick={this.handleInsert}
+              disabled={!safe}
+          > {safe ? "submit" : msg}
+          </button>
+          <ul>
+            {list.map((item) => (
+                <li key={item.id}>
+                  <div>{item.username}</div>
+                  <div>{item.password}</div>
+                  <div> {item.email}</div>
+                </li>
+            ))}
+          </ul>
+
+        </div>
+    )
+  }
+}
+
+export default App;
+```
+
+조건 2<br>
+1. 제출버튼은 유효성이 통과될때만 활성화된다<br>
+2. 유효성이 통과되지 않을때는 그 이유를 화면에 표시해줘야 한다<br>
+2-1 유효성검사 함수를 만든다<br>
+2-2 잘못된게 있으면, 에러 메세지를 return 해준다<br>
+2-3 잘못된게 없으면, 에러가 없으므로 null 을 리턴해준다<br>
+
+```javascript
+import React, {Component} from "react";
+
+class App extends Component{
+    id = 1;
+    state = {
+        username : '',
+        password : '',
+        email : '',
+        list : [],
+    };
+
+    handleChange = e => {
+        const { name, value} = e.target;
+        this.setState({
+            [name] : value
+        });
+    };
+    handleInsert = () => {
+        const { username,password,email,list } = this.state;
+        const error = this.inSafe(username,password,email);
+        if(error){
+            alert(error);
+            return
+        }
+
+        this.setState( {
+            username: '',
+            password: '',
+            email:'',
+            list:list.concat(
+                {id:this.id,
+                    username,
+                    password,
+                    email
+            })
+        });
+       this.id = this.id++;
+    }
+
+    inSafe = (username,password,email) => {
+        const patten = /^(?=\w{6,}$)(?=.*[a-z])(?=.*[A-Z])/;
+        if(!patten.test(password)){
+            return "대소문자를 넣어주세요!"
+        }
+
+        if(password.search(username) > -1) {
+            return "유저명이 포함되어있음!"
+        }
+        if(!email.includes("@")){
+            return "유효한 이메일 값이 아닙니다!"
+        }
+        return true;
+
+    };
+
+    render() {
+        const { username, password, email, list } = this.state;
+        return (
+            <div>
+                <input
+                    name = "username"
+                    placeholder = "이름"
+                    value = {username}
+                    onChange = {this.handleChange}
+                />
+                <input
+                    name = "password"
+                    placeholder = "비밀번호"
+                    value = {password}
+                    onChange = {this.handleChange}
+                />
+                <input
+                    name = "email"
+                    placeholder = "이메일"
+                    value = {email}
+                    onChange = {this.handleChange}
+                />
+                <button onClick={this.handleInsert}>submit</button>
+                <ul>
+                    {list.map((item) => (
+                    <li key ={item.id}>
+                        {item.username} {item.password} {item.email}
+                    </li>
+                        ))}
+                </ul>
+            </div>
+        );
+    }
+}
+
+export default App;
+```
+
+
+
+- `disabled` : bollen 타입으로 `true` 받으면 활성화,  `false` 받으면 비활성화<br>
+여기선 safe값에 따라 바뀌는건데, {!safe} 는 safe값이 true가 아니면 비활성화 하겠다! 
+- `test()` : 이 메소드는 문자열에서 일치하는 것을 찾아내 있으면 true값 리턴 , 그렇지 않으면 false값 리턴
+- `search()` : 이 메소드는 문자열에서 지정된 값을 검색하고 일치하는 위치를 반환함. 검색값은 문자열 혹은 정규식. 
+- 불일치 연산자 `(!==)`: 두 연산자가 같지 않거나, 같은 자료형이 아닐 때 참을 반환
+- 일치 연산자 `(===)` : 자료형 변환 없이 두 연산자가 엄격히 같은지 판별
+
