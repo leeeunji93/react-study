@@ -34,6 +34,10 @@ class App extends Component {
 
 	handlePlus = index => {
 		const lists = this.state.playlists;
+		const maxCore = 4;
+		if(lists[index].score.length > maxCore){
+			return
+		}
 		lists[index].score += "★";
 		this.setState({
 			playlists:lists

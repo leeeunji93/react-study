@@ -6,6 +6,7 @@ class PlaylistItem extends Component {
 
 	render() {
 		const {playlist,onRemove,handlePlus,handleMinus,itemIndex} = this.props;
+		const maxCore = 5;
 		return (
 			<div className="TodoItem">
 				<div
