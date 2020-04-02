@@ -48,7 +48,7 @@ class App extends Component {
 
 	handleMinus = index => {
 		const lists = this.state.playlists;
-		lists[index].score  = lists[index].score.slice(undefined,-1);
+		lists[index].score  = lists[index].score.slice(0,-1);
 		this.setState({
 			playlists:lists
 		})
