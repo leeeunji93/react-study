@@ -1,0 +1,45 @@
+.CreateForm {
+	padding: 30px 0;
+	background-color: #D9B29C;
+}
+
+.form_container {
+	width: 60%;
+	margin: 0 auto;
+	overflow: hidden;
+}
+
+.form_container input {
+	width: 75%;
+	font-size: 10px;
+	height: 40px;
+	float: left;
+	border: 0;
+	border-bottom: 2px solid #gre;
+	border-radius: 15px;
+	padding-right: 15px;
+}
+
+.form_container input:focus {
+	outline: none;
+}
+
+.form_container button {
+	border-radius: 10px;
+	width: 15%;
+	float: right;
+	height: 45px;
+	font-size: 20px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	transition:all 0.1s;
+	color: black;
+	padding-left: 5px;
+
+
+}
+
+.form_container button:active{
+	transform: translateY(3px);
+}

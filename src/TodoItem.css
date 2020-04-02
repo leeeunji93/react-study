@@ -1,0 +1,57 @@
+.TodoItem {
+	margin-bottom: 0;
+	border-bottom: 1px dotted #bbb;
+	padding-bottom: 0;
+	overflow: hidden;
+	font-size: 1.4rem;
+	cursor: pointer;
+
+}
+
+
+.TodoItem:hover .remove,
+.TodoItem:hover .plus,
+.TodoItem:hover .minus
+{
+	opacity: 0.5;
+}
+
+.TodoItem:last-child {
+	margin-bottom: 0;
+}
+
+.TodoItem.active {
+	color:#8C0303;
+}
+
+
+label{
+	display: flex;
+}
+
+
+
+
+
+.TodoItem .text {
+	margin-left: 30px;
+	overflow: hidden;
+}
+
+.TodoItem .remove {
+	float: right;
+	font-size: 1.2rem;
+	opacity: 0;
+}
+
+.TodoItem .plus {
+	float: right;
+	font-size: 1.2rem;
+	opacity: 0;
+}
+
+.TodoItem .minus {
+	float: right;
+	font-size: 1.2rem;
+	opacity: 0;
+}
